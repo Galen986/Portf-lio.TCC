@@ -170,3 +170,103 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
+// Função para atualizar o resumo do pedido
+function atualizarResumoPedido() {
+  const listaProdutos = document.getElementById("lista-produtos");
+  const valorTotalSpan = document.getElementById("valor-total");
+  const freteGratisDiv = document.getElementById("frete-gratis");
+  const descontoAplicadoDiv = document.getElementById("desconto-aplicado");
+
+  const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+  let total = 0;
+  listaProdutos.innerHTML = "";
+
+  if (carrinho.length === 0) {
+    listaProdutos.innerHTML = "<li>Nenhum produto no carrinho.</li>";
+  } else {
+    carrinho.forEach((produto) => {
+      const li = document.createElement("li");
+      li.textContent = `${produto.nome} - R$ ${produto.preco.toFixed(2)} (Quantidade: ${produto.quantidade})`;
+      listaProdutos.appendChild(li);
+      total += produto.preco * produto.quantidade;
+    });
+  }
+
+  const limiteFreteGratis = 300.0;
+  const descontoMinimo = 200.0;
+  const descontoPercentual = 0.1;
+
+  if (freteGratisDiv) {
+    freteGratisDiv.style.display = total >= limiteFreteGratis ? "block" : "none";
+  }
+
+  let totalComDesconto = total;
+  if (descontoAplicadoDiv) {
+    if (total >= descontoMinimo) {
+      const desconto = total * descontoPercentual;
+      totalComDesconto -= desconto;
+      descontoAplicadoDiv.style.display = "block";
+      descontoAplicadoDiv.textContent = `Desconto aplicado: R$ ${desconto.toFixed(2)}`;
+    } else {
+      descontoAplicadoDiv.style.display = "none";
+    }
+  }
+
+  valorTotalSpan.textContent = totalComDesconto.toFixed(2);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Atualiza o resumo ao carregar a página
+  atualizarResumoPedido();
+
+  // Adiciona ao carrinho ao clicar em "Comprar"
+  document.querySelectorAll('.btn-comprar').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const card = btn.closest('.card-produto');
+      const nome = card.getAttribute('data-nome');
+      const preco = parseFloat(card.getAttribute('data-preco'));
+      let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+
+      // Se já existe, aumenta quantidade, senão adiciona
+      const idx = carrinho.findIndex(p => p.nome === nome);
+      if (idx > -1) {
+        carrinho[idx].quantidade += 1;
+      } else {
+        carrinho.push({ nome, preco, quantidade: 1 });
+      }
+
+      localStorage.setItem("carrinho", JSON.stringify(carrinho));
+      atualizarResumoPedido();
+      alert("Produto adicionado ao carrinho!");
+    });
+  });
+
+  // Limpa carrinho
+  const limparCarrinhoBtn = document.getElementById("limpar-carrinho");
+  if (limparCarrinhoBtn) {
+    limparCarrinhoBtn.addEventListener("click", () => {
+      localStorage.removeItem("carrinho");
+      atualizarResumoPedido();
+    });
+  }
+
+  // Finaliza pedido
+  const finalizarPedidoBtn = document.getElementById("finalizar-pedido");
+  if (finalizarPedidoBtn) {
+    finalizarPedidoBtn.addEventListener("click", () => {
+      const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+      if (carrinho.length === 0) {
+        alert("Seu carrinho está vazio!");
+        return;
+      }
+      alert("Pedido finalizado com sucesso! Obrigado pela compra.");
+      localStorage.removeItem("carrinho");
+      atualizarResumoPedido();
+    });
+  }
+});
+
+
+
