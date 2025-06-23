@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Premium Store | Contato</title>
+  <link rel="stylesheet" href="estilo.css" />
+  <script defer src="script.js"></script>
+  <link rel="stylesheet" href="corrida.png" />
+  <link rel="icon" href="corrida.png" />
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="container">
+      <div class="logo">
+        <h1>Premium Store</h1>
+      </div>
+      <nav class="menu">
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="produtos.html">Produtos</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+      </nav>
+      <button class="btn-toggle-menu" aria-label="Abrir menu">
+        ☰
+      </button>
+    </div>
+  </header>
+
+  <!-- Seção Contato -->
+  <section class="contato-sessao">
+    <div class="container">
+      <h1>Fale Conosco</h1>
+      <div class="contato-conteudo">
+        <div class="contato-info">
+          <p><strong>Endereço:</strong> Rua Exemplo, 123 – São Paulo, SP</p>
+          <p><strong>Telefone:</strong> (11) 99999-9999</p>
+          <p><strong>E-mail:</strong> contato@PremiumStore.com</p>
+          <div class="mapa">
+            <!-- Exemplo de Google Maps embed (substitua pelo seu embed) -->
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3656.0000000000005!2d-46.633309684518745!3d-23.550519084686313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59cae8ee91ad%3A0x0000000000000000!2sIbirapuera%2C%20São%20Paulo%20-%20SP%2C%20Brasil!5e0!3m2!1spt-BR!2sus!4v0000000000000"
+              width="100%"
+              height="300"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+
+        <div class="contato-form">
+          <form action="#" method="post">
+            <label for="nome">Nome</label>
+            <input
+              type="text"
+              id="nome"
+              name="nome"
+              placeholder="Seu nome completo"
+              required
+            />
+
+            <label for="email">E-mail</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="seu@exemplo.com"
+              required
+            />
+
+            <label for="mensagem">Mensagem</label>
+            <textarea
+              id="mensagem"
+              name="mensagem"
+              rows="5"
+              placeholder="Escreva sua mensagem..."
+              required
+            ></textarea>
+
+            <button type="submit" class="btn-animado btn-enviar">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rodapé -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-col">
+        <h4>Run&Street</h4>
+        <p>Artigos esportivos para todos os perfis.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <ul>
+          <li><a href="mailto:contato@PremiumStore.com">contato@PremiumStore.com</a></li>
+          <li><a href="tel:+5511999999999">(11) 99999-9999</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Siga-nos</h4>
+        <ul class="social">
+          <li><a href="#" target="_blank">Instagram</a></li>
+          <li><a href="#" target="_blank">Facebook</a></li>
+          <li><a href="#" target="_blank">Twitter</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Pagamento Seguro</h4>
+        <div class="payments">
+          <img src="./formas/Boleto-bancario.png" alt="boleto" />
+          <img src="./formas/cartao.png" alt="Cartao" />
+          <img src="./formas/Logo-Pix.Png" alt="Pix" />
+        </div>
+      </div>
+    </div>
+    <div class="footer-copy">
+      <p>© 2025 Premium Store. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+</body>
+</html>

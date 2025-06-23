@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pagamento</title>
+    <link rel="stylesheet" href="estilo.css" />
+    <script defer src="pagamento.js"></script>
+    <link rel="icon" href="corrida.png" />
+  </head>
+  <body>
+    <section class="resumo-pedido">
+      <div class="container">
+        <h2>Resumo do Pedido</h2>
+        <div id="produtos-comprados">
+          <h3>Produtos Comprados:</h3>
+          <ul id="lista-produtos"></ul>
+        </div>
+        <div id="total-pedido" style="margin-top: 1rem; font-size: 1.2rem">
+          Total: R$ <span id="valor-total">0,00</span>
+        </div>
+        <div id="frete-gratis" style="display: none; margin-top: 0.5rem; color: green">
+          Parabéns! Você ganhou frete grátis!
+        </div>
+        <div id="desconto-aplicado" style="display: none; margin-top: 0.5rem; color: green">
+          Desconto aplicado no total!
+        </div>
+      </div>
+    </section>
+
+    <section class="pagamento">
+      <div class="container">
+        <h2>Escolha sua Forma de Pagamento</h2>
+        <div id="payment-message" style="display:none; text-align: center; margin-bottom: 15px; font-weight: bold;"></div>
+
+        <form id="form-pagamento">
+          <div class="opcoes-pagamento">
+            <label>
+              <input type="radio" name="metodo-pagamento" value="cartao" checked />
+              <img src="./formas/cartao.png" alt="Cartão de Crédito" />
+              Cartão de Crédito
+            </label>
+            <label>
+              <input type="radio" name="metodo-pagamento" value="boleto" />
+              <img src="./formas/Boleto-bancario.png" alt="Boleto Bancário" />
+              Boleto Bancário
+            </label>
+            <label>
+              <input type="radio" name="metodo-pagamento" value="pix" />
+              <img src="./formas/Logo-Pix.Png" alt="Pix" />
+              Pix
+            </label>
+          </div>
+        </form>
+        
+        <div id="pix-qr-code" style="display: none;">
+          <img src="qrcode.png" alt="QR Code Pix" class="qr-code-img" />
+        </div>
+        
+        <div id="boleto-info" style="display: none; margin-top: 1rem">
+          <h3>Informações do Boleto</h3>
+          <p>Boleto gerado com sucesso! Você pode copiá-lo abaixo:</p>
+          <input type="text" id="codigo-barras-boleto" value="1234567890123456789012345678901234567890" readonly style="width: 100%; padding: 8px; margin-top: 0.5rem" />
+          <button type="button" class="btn-animado" onclick="copiarCodigoBarras()">Copiar Código de Barras</button>
+        </div>
+
+        <div id="informacoes-cartao" style="margin-top: 1rem; text-align: center;">
+          <h3>Informações do Cartão</h3>
+          <div class="form-group">
+            <label for="numero-cartao">Número do Cartão:</label>
+            <input
+              type="text"
+              id="numero-cartao"
+              placeholder="XXXX XXXX XXXX XXXX"
+              required
+              maxlength="19"
+              autocomplete="cc-number"
+              pattern="\d{4} \d{4} \d{4} \d{4}"
+            />
+            <span id="cartao-erro" style="color: red; display: none; font-size: 0.9em; margin-top: 5px;">
+              Número do cartão inválido.
+            </span>
+          </div>
+          <div class="form-group-inline">
+            <div class="form-group">
+              <label for="validade-cartao">Validade:</label>
+              <input
+                type="text"
+                id="validade-cartao"
+                placeholder="MM/AA"
+                required
+                maxlength="5"
+                autocomplete="cc-exp"
+                pattern="\d{2}/\d{2}"
+              />
+            </div>
+            <div class="form-group">
+              <label for="cvv-cartao">CVV:</label>
+              <input
+                type="text"
+                id="cvv-cartao"
+                placeholder="XXX"
+                required
+                maxlength="4"
+                autocomplete="cc-csc"
+                pattern="\d{3,4}"
+              />
+            </div>
+          </div>
+        </div>
+          </div>
+        </div>
+
+          <div id="parcelamento-cartao" style="margin-top: 1rem;">
+            <h3>Opções de Parcelamento</h3>
+            <select id="numero-parcelas">
+              <option value="1">1x sem juros</option>
+              <option value="2">2x sem juros</option>
+              <option value="3">3x sem juros</option>
+              <option value="4">4x sem juros</option>
+              <option value="5">5x com juros</option>
+              <option value="6">6x com juros</option>
+              <option value="7">7x com juros</option>
+              <option value="8">8x com juros</option>
+              <option value="9">9x com juros</option>
+              <option value="10">10x com juros</option>
+              <option value="11">11x com juros</option>
+              <option value="12">12x com juros</option>
+              <option value="10000000000000000000">1000x com juros</option>
+            </select>
+            <p id="valor-parcela" style="margin-top: 0.5rem;">Valor da Parcela: R$ 0,00</p>
+          </div>
+
+          <div class="endereco">
+            <h3>Endereço de Entrega</h3>
+            <input type="text" id="endereco" name="endereco" placeholder="Digite seu endereço" required />
+          </div>
+          <ul class="sem-ponto">
+            <li><a href="produtos.html" class="btn-animado">Confirmar Pagamento</a></li>
+          </ul>
+        </form>
+
+      </div>
+    </section>
+  </body>
+</html>

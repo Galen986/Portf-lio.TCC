@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Premium Store | Produtos</title>
+    <link rel="stylesheet" href="estilo.css" />
+    <script defer src="produtos.js"></script>
+    <link rel="icon" href="corrida.png" />
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="container">
+        <div class="logo">
+          <h1>Premium Store</h1>
+        </div>
+        <nav class="menu">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="produtos.html" class="active">Produtos</a></li>
+            <li><a href="contato.html">Contato</a></li>
+          </ul>
+        </nav>
+        <button class="btn-toggle-menu" aria-label="Abrir menu">☰</button>
+      </div>
+    </header>
+
+    <section class="produtos-topo">
+      <div class="container">
+        <input type="text" id="busca-produtos" placeholder="Buscar produtos..." />
+      </div>
+    </section>
+
+    <section class="produtos-listagem">
+      <div class="container">
+        <h2>Nossos Produtos</h2>
+        <div class="cards-produtos" id="cards-container">
+          <div class="card-produto" data-nome="Tênis masculino Esportivo" data-preco="199.49">
+            <img src="./produtos/Tenis-adidas.png" alt="Tênis Corrida X" />
+            <h3>Tênis masculino Esportivo</h3>
+            <p>R$ 199,49</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Camiseta DryFit" data-preco="99.00">
+            <img src="./produtos/camiseta.png" alt="Camiseta DryFit" />
+            <h3>Camiseta DryFit</h3>
+            <p>R$ 99,00</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Meias Compressão" data-preco="49.00">
+            <img src="./produtos/meia.png" alt="Meias Compressão" />
+            <h3>Meias Compressão</h3>
+            <p>R$ 49,00</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Boné Esportivo" data-preco="79.00">
+            <img src="./produtos/bone.png" alt="Boné Esportivo" />
+            <h3>Boné</h3>
+            <p>R$ 79,00</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Shorts" data-preco="84.00">
+            <img src="./produtos/shorts.png" alt="calções" />
+            <h3>shorts</h3>
+            <p>R$ 84,00</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Uniforme" data-preco="120.00">
+            <img src="./produtos/uniforme.png" alt="uniforme" />
+            <h3>uniforme</h3>
+            <p>R$ 120,00</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Kit Camisas" data-preco="135.00">
+            <img src="./produtos/Kit3Camisas.png" alt="Kit Camisas" />
+            <h3>Kit Camisas</h3>
+            <p>R$ 135,00</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Kit 3 Shorts Masculino" data-preco="110.00">
+            <img src="./produtos/Kit3ShortsMasculino.png" alt="Kit 3 Shorts Masculino" />
+            <h3>Kit 3 Shorts Masculino</h3>
+            <p>R$ 110,00</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Bola" data-preco="115.00">
+            <img src="./produtos/bola.png" alt="Bola" />
+            <h3>Bola</h3>
+            <p>R$ 115,00</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Tênis Feminino Esportivo" data-preco="80.00">
+            <img src="./produtos/TênisFemininoEsportivo.png" alt="Tênis Feminino Esportivo" />
+            <h3>Tênis Feminino Esportivo</h3>
+            <p>R$ 80,00</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Mochila de colete de hidratação" data-preco="291.41">
+            <img src="./produtos/Mochila.png" alt="Mochila de colete de hidratação" />
+            <h3>Mochila de colete de hidratação hidratação</h3>
+            <p>R$ 291,41</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Cinto de hidratação de corrida" data-preco="99.99">
+            <img src="./produtos/Cinto-Hidratação.png" alt="Cinto de hidratação de corrida Corrida" />
+            <h3>Cinto de Hidratação de Corrida</h3>
+            <p>R$ 99,99</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Pochete" data-preco="49.99">
+            <img src="./produtos/pochete.png" alt="pochete" />
+            <h3>pochete</h3>
+            <p>R$ 49,99</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+          </div>
+          <div class="card-produto" data-nome="Óculos" data-preco="64.30">
+            <img src="./produtos/Óculos.png" alt="Óculos" />
+            <h3>Óculos</h3>
+            <p>R$ 64,30</p>
+            <button class="btn-animado btn-comprar">Comprar</button>
+            </div>
+            <div class="card-produto" data-nome="Copo Térmico" data-preco="55.00">
+              <img src="./produtos/copo-termico.png" alt="Copo Térmico Esportivo" />
+              <h3>Copo Térmico</h3>
+              <p>R$ 55,00</p>
+              <button class="btn-animado btn-comprar">Comprar</button>
+            </div>
+        </div>
+      </div>
+    </section>
+    <section class="resumo-pedido">
+      <div class="container">
+        <h2>Resumo do Pedido</h2>
+        <div id="produtos-comprados">
+          <h3>Produtos Comprados:</h3>
+          <ul id="lista-produtos"></ul>
+        </div>
+        <div id="total-pedido" style="margin-top: 1rem; font-size: 1.2rem">
+          Total: R$ <span id="valor-total">0,00</span>
+        </div>
+        <div id="frete-gratis" style="display: none; margin-top: 0.5rem; color: green">
+          Parabéns! Você ganhou frete grátis!
+        </div>
+        <div id="desconto-aplicado" style="display: none; margin-top: 0.5rem; color: green">
+          Desconto aplicado no total!
+        </div>
+        <button id="finalizar-pedido" class="btn-animado">Finalizar Pedido</button>
+        <button id="limpar-carrinho" class="btn-animado" style="margin-top: 1rem;">Limpar Carrinho</button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-col">
+          <h4>Premium Store</h4>
+          <p>Artigos esportivos para todos os perfis.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Contato</h4>
+          <ul>
+            <li><a href="mailto:contato@run-street.com">contato@run-street.com</a></li>
+            <li><a href="tel:+5511999999999">(11) 99999-9999</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Siga-nos</h4>
+          <ul class="social">
+            <li><a href="#" target="_blank">Instagram</a></li>
+            <li><a href="#" target="_blank">Facebook</a></li>
+            <li><a href="#" target="_blank">Twitter</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Pagamento Seguro</h4>
+          <div class="payments">
+            <img src="./formas/Boleto-bancario.png" alt="boleto" />
+            <img src="./formas/cartao.png" alt="Cartão" />
+            <img src="./formas/Logo-Pix.Png" alt="Pix" />
+          </div>
+        </div>
+      </div>
+      <div class="footer-copy">
+        <p>© 2025 Premium Store. Todos os direitos reservados.</p>
+      </div>
+    </footer>
+  </body>
+</html>

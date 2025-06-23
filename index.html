@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Premium Store | Home</title>
+  <link rel="stylesheet" href="estilo.css" />
+  <script defer src="script.js"></script>
+  <link rel="stylesheet" href="corrida.png" />
+  <link rel="icon" href="corrida.png" />
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="container">
+      <div class="logo">
+        <h1>Premium Store</h1>
+      </div>
+      <nav class="menu">
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="sobre.html">Sobre</a></li>
+          <li><a href="produtos.html">Produtos</a></li>
+          <li><a href="contato.html">Contato</a></li>
+        </ul>
+      </nav>
+      <button class="btn-toggle-menu" aria-label="Abrir menu">
+        ☰
+      </button>
+    </div>
+  </header>
+
+  <!-- Banner Principal -->
+  <section class="banner">
+    <div class="container">
+      <div class="banner-texto">
+        <h1>Bem-vindo à Premium Store</h1>
+        <p>Seu lugar para artigos esportivos de alta performance.</p>
+        <a href="produtos.html" class="btn-cta">Veja nossos lançamentos</a>
+      </div>
+      <div class="banner-imagem">
+        <!-- Exemplo de imagem de destaque -->
+        <img src="./logotipo/premium-store.png" alt="Corrida urbana" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Destaques/Novidades -->
+  <section class="destaques">
+    <div class="container">
+      <h2>Destaques da Semana</h2>
+      <div class="cards-destaque">
+        <div class="card">
+          <img src="./produtos/Tenis-adidas.png" alt="Tênis A" />
+          <h3>Tênis Corrida X</h3>
+          <p>Leveza e conforto para seu treino.</p>
+          
+        </div>
+        <div class="card">
+          <img src="./produtos/camiseta.png" alt="Camiseta B" />
+          <h3>Camiseta DryFit</h3>
+          <p>Respirabilidade máxima em todas as distâncias.</p>
+          
+        </div>
+        <div class="card">
+          <img src="./produtos/meia.png" alt="Meias C" />
+          <h3>Meias Compressão</h3>
+          <p>Recuperação acelerada nos seus treinos.</p>
+          
+        </div>
+        <div class="card">
+          <img src="./produtos/bone.png" alt="Boné D" />
+          <h3>Boné Esportivo</h3>
+          <p>Proteção UV e ventilação eficiente.</p>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Seção CTA Adicional -->
+  <section class="cta-adicional">
+    <div class="container">
+      <h2>Quer ficar por dentro das promoções?</h2>
+      <p>Assine nossa newsletter e receba descontos exclusivos.</p>
+      <form class="form-newsletter" action="#" method="post">
+        <input
+          type="email"
+          name="email"
+          placeholder="Digite seu e-mail"
+          required
+        />
+        <button type="submit" class="btn-newsletter">Assinar</button>
+      </form>
+    </div>
+  </section>
+
+  <div class="tag-lista">
+    <div class="fode"></div>
+    <div class="inner">
+      <!-- Marcas (1ª vez) -->
+      <div class="tag"><img src="./marcas/adidas.png" alt="Adidas"></div>
+      <div class="tag"><img src="./marcas/fila.png" alt="Fila"></div>
+      <div class="tag"><img src="./marcas/lacoste.png" alt="Lacoste"></div>
+      <div class="tag"><img src="./marcas/mizuno.png" alt="Misuno"></div>
+      <div class="tag"><img src="./marcas/newbalance.png" alt="New Balance"></div>
+      <div class="tag"><img src="./marcas/nike.png" alt="Nike"></div>
+      <!-- Marcas (2ª vez para loop) -->
+      <div class="tag"><img src="./marcas/adidas.png" alt="Adidas"></div>
+      <div class="tag"><img src="./marcas/fila.png" alt="Fila"></div>
+      <div class="tag"><img src="./marcas/lacoste.png" alt="Lacoste"></div>
+      <div class="tag"><img src="./marcas/mizuno.png" alt="Misuno"></div>
+      <div class="tag"><img src="./marcas/newbalance.png" alt="New Balance"></div>
+      <div class="tag"><img src="./marcas/nike.png" alt="Nike"></div>
+    </div>
+  </div>
+  
+
+  <!-- Rodapé -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-col">
+        <h4>Premium Store</h4>
+        <p>Artigos esportivos para todos os perfis.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <ul>
+          <li><a href="mailto:contato@run-street.com">contato@run-street.com</a></li>
+          <li><a href="tel:+5511999999999">(11) 99999-9999</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Siga-nos</h4>
+        <ul class="social">
+          <li><a href="#" target="_blank">Instagram</a></li>
+          <li><a href="#" target="_blank">Facebook</a></li>
+          <li><a href="#" target="_blank">Twitter</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Pagamento Seguro</h4>
+        <div class="payments">
+          <img src="./formas/Boleto-bancario.png" alt="boleto" />
+          <img src="./formas/cartao.png" alt="Cartao" />
+          <img src="./formas/Logo-Pix.Png" alt="Pix" />
+        </div>
+      </div>
+    </div>
+    <div class="footer-copy">
+      <p>© 2025 Premium Store. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+</body>
+</html>

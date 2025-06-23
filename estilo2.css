@@ -1,0 +1,89 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 20px;
+  }
+  
+  .container {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    padding: 40px;
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+    animation: fadeInUp 1s ease-out;
+  }
+  
+  h1 {
+    font-size: 3rem;
+    background: linear-gradient(90deg, #ff416c, #ff4b2b);
+    background-clip: text; /* Propriedade padrão */
+    -webkit-background-clip: text; /* Compatibilidade com WebKit */
+    -webkit-text-fill-color: transparent; /* Garante o preenchimento transparente */
+    margin-bottom: 20px;
+}
+  
+  p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: #ddd;
+  }
+  
+  .button {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(90deg, #00c9ff, #92fe9d);
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+  }
+  
+  .button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #92fe9d;
+  }
+  
+  /* Animação inicial */
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsividade */
+  @media (max-width: 600px) {
+    h1 {
+      font-size: 2.2rem;
+    }
+  
+    .button {
+      padding: 12px 20px;
+      font-size: 1rem;
+    }
+  }
+  
