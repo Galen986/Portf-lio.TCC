@@ -31,9 +31,35 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const limiteFreteGratis = 300.0;
-  const descontoMinimo = 200.0;
-  const descontoPercentual = 0.1; // 10%
+  // === CÓDIGOS PROMOCIONAIS ===
+const cupons = {
+  'FRETEGRATIS': { freteGratis: true, desconto: 0 },
+  'DESCONTO10': { freteGratis: false, desconto: 0.10 },
+  'SUPER20': { freteGratis: true, desconto: 0.20 }
+};
+let cupomAplicado = null;
+
+const aplicarCupomBtn = document.getElementById('aplicar-cupom');
+const codigoPromocionalInput = document.getElementById('codigo-promocional');
+const mensagemCupomSpan = document.getElementById('mensagem-cupom');
+
+if (aplicarCupomBtn) {
+  aplicarCupomBtn.addEventListener('click', function() {
+    const input = codigoPromocionalInput.value.trim().toUpperCase();
+    mensagemCupomSpan.style.color = "green";
+    if (cupons[input]) {
+      cupomAplicado = cupons[input];
+      mensagemCupomSpan.style.display = "inline";
+      mensagemCupomSpan.textContent = "Cupom aplicado com sucesso!";
+      atualizarResumoPedido(); // Função para recalcular o total, veja abaixo!
+    } else {
+      cupomAplicado = null;
+      mensagemCupomSpan.style.display = "inline";
+      mensagemCupomSpan.style.color = "red";
+      mensagemCupomSpan.textContent = "Cupom inválido!";
+    }
+  });
+}
 
   // Exibe frete grátis ou desconto aplicado
   if (freteGratisDiv) {
