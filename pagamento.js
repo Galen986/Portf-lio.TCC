@@ -171,7 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-
 // Função para atualizar o resumo do pedido
 function atualizarResumoPedido() {
   const listaProdutos = document.getElementById("lista-produtos");
@@ -267,6 +266,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
-
-
