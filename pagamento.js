@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+  // Referências aos elementos do DOM
   const listaProdutos = document.getElementById("lista-produtos");
   const valorTotalSpan = document.getElementById("valor-total");
   const freteGratisDiv = document.getElementById("frete-gratis");
@@ -18,57 +18,64 @@ document.addEventListener("DOMContentLoaded", () => {
   const enderecoInput = document.getElementById("endereco");
   const mensagemConfirmacao = document.getElementById("mensagem-confirmacao");
 
-  let total = 0;
-
-  // Exibe os produtos no carrinho
-  if (carrinho.length === 0) {
-    listaProdutos.innerHTML = "<li>Nenhum produto no carrinho.</li>";
-  } else {
-    carrinho.forEach((produto) => {
-      const li = document.createElement("li");
-      li.textContent = `${produto.nome} - R$ ${produto.preco.toFixed(2)} (Quantidade: ${produto.quantidade})`;
-      listaProdutos.appendChild(li);
-      total += produto.preco * produto.quantidade;
-    });
-  }
-
   const limiteFreteGratis = 300.0;
   const descontoMinimo = 200.0;
   const descontoPercentual = 0.1; // 10%
 
-  // Exibe frete grátis ou desconto aplicado
-  if (freteGratisDiv) {
-    freteGratisDiv.style.display = total >= limiteFreteGratis ? "block" : "none";
-  }
+  // FUNÇÃO CENTRAL: Atualiza o resumo do pedido SEMPRE que carrinho mudar
+  function atualizarResumoPedido() {
+    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+    let total = 0;
+    listaProdutos.innerHTML = "";
 
-  let totalComDesconto = total;
-  if (descontoAplicadoDiv) {
-    if (total >= descontoMinimo) {
-      const desconto = total * descontoPercentual;
-      totalComDesconto -= desconto;
-      descontoAplicadoDiv.style.display = "block";
-      descontoAplicadoDiv.textContent = `Desconto aplicado: R$ ${desconto.toFixed(2)}`;
+    if (carrinho.length === 0) {
+      listaProdutos.innerHTML = "<li>Nenhum produto no carrinho.</li>";
     } else {
-      descontoAplicadoDiv.style.display = "none";
+      carrinho.forEach((produto) => {
+        const li = document.createElement("li");
+        li.textContent = `${produto.nome} - R$ ${produto.preco.toFixed(2)} (Quantidade: ${produto.quantidade})`;
+        listaProdutos.appendChild(li);
+        total += produto.preco * produto.quantidade;
+      });
     }
-  }
 
-  valorTotalSpan.textContent = totalComDesconto.toFixed(2);
+    // Frete grátis e desconto
+    if (freteGratisDiv) {
+      freteGratisDiv.style.display = total >= limiteFreteGratis ? "block" : "none";
+    }
 
-  // Atualiza as opções de parcelamento
-  if (numeroParcelasSelect && valorParcelaSpan) {
-    numeroParcelasSelect.addEventListener("change", () => {
-      const numeroParcelas = parseInt(numeroParcelasSelect.value, 10);
+    let totalComDesconto = total;
+    if (descontoAplicadoDiv) {
+      if (total >= descontoMinimo) {
+        const desconto = total * descontoPercentual;
+        totalComDesconto -= desconto;
+        descontoAplicadoDiv.style.display = "block";
+        descontoAplicadoDiv.textContent = `Desconto aplicado: R$ ${desconto.toFixed(2)}`;
+      } else {
+        descontoAplicadoDiv.style.display = "none";
+      }
+    }
+
+    valorTotalSpan.textContent = totalComDesconto.toFixed(2);
+
+    // Atualiza as opções de parcelamento
+    if (numeroParcelasSelect && valorParcelaSpan) {
+      const numeroParcelas = parseInt(numeroParcelasSelect.value, 10) || 1;
       let valorParcela = totalComDesconto / numeroParcelas;
-
-      // Adiciona juros para parcelas acima de 4
       if (numeroParcelas > 4) {
         const jurosPercentual = 0.05; // 5% de juros
         valorParcela += valorParcela * jurosPercentual;
       }
-
       valorParcelaSpan.textContent = `R$ ${valorParcela.toFixed(2)} por parcela`;
-    });
+    }
+  }
+
+  // Chame ao carregar a página
+  atualizarResumoPedido();
+
+  // Sempre que o número de parcelas mudar
+  if (numeroParcelasSelect && valorParcelaSpan) {
+    numeroParcelasSelect.addEventListener("change", atualizarResumoPedido);
   }
 
   // Alterna entre Pix, Boleto e Cartão
@@ -76,7 +83,6 @@ document.addEventListener("DOMContentLoaded", () => {
   metodoPagamentoRadios.forEach((radio) => {
     radio.addEventListener("change", () => {
       const metodoSelecionado = document.querySelector("input[name='metodo-pagamento']:checked").value;
-
       pixQrCodeDiv.style.display = metodoSelecionado === "pix" ? "block" : "none";
       boletoInfoDiv.style.display = metodoSelecionado === "boleto" ? "block" : "none";
       informacoesCartaoDiv.style.display = metodoSelecionado === "cartao" ? "block" : "none";
@@ -84,10 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Garante que o QR Code esteja oculto inicialmente
   if (pixQrCodeDiv) pixQrCodeDiv.style.display = "none";
-
-  // Exibe o QR Code apenas se "Pix" for selecionado
   metodoPagamentoRadios.forEach((radio) => {
     radio.addEventListener("change", () => {
       const metodoSelecionado = document.querySelector("input[name='metodo-pagamento']:checked").value;
@@ -104,7 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Erro interno: Não foi possível copiar o código de barras.");
       return;
     }
-
     codigoBarrasInput.select();
     document.execCommand("copy");
     alert("Código de barras copiado com sucesso!");
@@ -123,9 +125,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   confirmarPagamentoBtn.addEventListener("click", (event) => {
-    event.preventDefault(); // Impede o redirecionamento imediato
-
-    // Verifica se os campos do cartão estão preenchidos
+    event.preventDefault();
+    // Validações
     if (
       !numeroCartaoInput.value.trim() ||
       !validadeCartaoInput.value.trim() ||
@@ -135,38 +136,49 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Por favor, preencha todos os campos do cartão e endereço antes de confirmar o pagamento.");
       return;
     }
-
-    // Valida o formato do número do cartão
     const regexCartao = /^\d{4} \d{4} \d{4} \d{4}$/;
     if (!regexCartao.test(numeroCartaoInput.value)) {
       alert("Número do cartão inválido. Use o formato XXXX XXXX XXXX XXXX.");
       return;
     }
-
-    // Valida o formato da validade do cartão
     const regexValidade = /^\d{2}\/\d{2}$/;
     if (!regexValidade.test(validadeCartaoInput.value)) {
       alert("Validade do cartão inválida. Use o formato MM/AA.");
       return;
     }
-
-    // Valida o formato do CVV
     const regexCVV = /^\d{3,4}$/;
     if (!regexCVV.test(cvvCartaoInput.value)) {
       alert("CVV inválido. Use 3 ou 4 dígitos.");
       return;
     }
-
     // Exibe a mensagem de confirmação
     if (mensagemConfirmacao) {
       mensagemConfirmacao.textContent = "Pagamento confirmado com sucesso!";
       mensagemConfirmacao.style.display = "block";
       setTimeout(() => {
+        // Limpa carrinho e atualiza resumo!
+        localStorage.removeItem("carrinho");
+        atualizarResumoPedido();
         window.location.href = "produtos.html";
       }, 3000);
     } else {
+      // Limpa carrinho e atualiza resumo!
+      localStorage.removeItem("carrinho");
+      atualizarResumoPedido();
       alert("Pagamento confirmado com sucesso!");
       window.location.href = "produtos.html";
     }
   });
+
+  // Exemplo: caso você tenha botão de "Limpar Carrinho"
+  const limparCarrinhoBtn = document.getElementById("limpar-carrinho");
+  if (limparCarrinhoBtn) {
+    limparCarrinhoBtn.addEventListener("click", () => {
+      localStorage.removeItem("carrinho");
+      atualizarResumoPedido();
+    });
+  }
+
+  // DICA: Sempre que adicionar/remover produto do carrinho, chame:
+  // atualizarResumoPedido();
 });
