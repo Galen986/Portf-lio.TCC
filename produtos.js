@@ -240,3 +240,44 @@ document.addEventListener('DOMContentLoaded', () => {
     menu.classList.toggle('open'); // Adiciona ou remove a classe 'open'
   });
 });
+
+function atualizarResumoPedido() {
+  // ...cálculo do total normal...
+  let totalComDesconto = total;
+  let desconto = 0;
+
+  // Lógica para cupons
+  if (cupomAplicado) {
+    if (cupomAplicado.desconto > 0) {
+      desconto = total * cupomAplicado.desconto;
+      totalComDesconto -= desconto;
+      descontoAplicadoDiv.style.display = "block";
+      descontoAplicadoDiv.textContent = `Desconto aplicado: R$ ${desconto.toFixed(2)}`;
+    } else {
+      descontoAplicadoDiv.style.display = "none";
+    }
+
+    if (cupomAplicado.freteGratis) {
+      freteGratisDiv.style.display = "block";
+    } else {
+      freteGratisDiv.style.display = total >= limiteFreteGratis ? "block" : "none";
+    }
+  } else {
+    // Regras padrão, se não houver cupom
+    if (total >= descontoMinimo) {
+      desconto = total * descontoPercentual;
+      totalComDesconto -= desconto;
+      descontoAplicadoDiv.style.display = "block";
+      descontoAplicadoDiv.textContent = `Desconto aplicado: R$ ${desconto.toFixed(2)}`;
+    } else {
+      descontoAplicadoDiv.style.display = "none";
+    }
+    freteGratisDiv.style.display = total >= limiteFreteGratis ? "block" : "none";
+  }
+
+  // Atualize o valor final
+  document.getElementById('valor-total').textContent = totalComDesconto.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
