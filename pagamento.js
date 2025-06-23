@@ -1,9 +1,51 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Referências aos elementos do DOM
+// Função central: Atualiza o resumo do pedido
+function atualizarResumoPedido() {
   const listaProdutos = document.getElementById("lista-produtos");
   const valorTotalSpan = document.getElementById("valor-total");
   const freteGratisDiv = document.getElementById("frete-gratis");
   const descontoAplicadoDiv = document.getElementById("desconto-aplicado");
+
+  const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+  let total = 0;
+  listaProdutos.innerHTML = "";
+
+  if (carrinho.length === 0) {
+    listaProdutos.innerHTML = "<li>Nenhum produto no carrinho.</li>";
+  } else {
+    carrinho.forEach((produto) => {
+      const li = document.createElement("li");
+      li.textContent = `${produto.nome} - R$ ${produto.preco.toFixed(2)} (Quantidade: ${produto.quantidade})`;
+      listaProdutos.appendChild(li);
+      total += produto.preco * produto.quantidade;
+    });
+  }
+
+  const limiteFreteGratis = 300.0;
+  const descontoMinimo = 200.0;
+  const descontoPercentual = 0.1;
+
+  if (freteGratisDiv) {
+    freteGratisDiv.style.display = total >= limiteFreteGratis ? "block" : "none";
+  }
+
+  let totalComDesconto = total;
+  if (descontoAplicadoDiv) {
+    if (total >= descontoMinimo) {
+      const desconto = total * descontoPercentual;
+      totalComDesconto -= desconto;
+      descontoAplicadoDiv.style.display = "block";
+      descontoAplicadoDiv.textContent = `Desconto aplicado: R$ ${desconto.toFixed(2)}`;
+    } else {
+      descontoAplicadoDiv.style.display = "none";
+    }
+  }
+
+  valorTotalSpan.textContent = totalComDesconto.toFixed(2);
+}
+
+// Evento principal
+document.addEventListener("DOMContentLoaded", () => {
+  // Referências aos elementos do DOM
   const numeroParcelasSelect = document.getElementById("numero-parcelas");
   const valorParcelaSpan = document.getElementById("valor-parcela");
   const pixQrCodeDiv = document.getElementById("pix-qr-code");
@@ -18,64 +60,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const enderecoInput = document.getElementById("endereco");
   const mensagemConfirmacao = document.getElementById("mensagem-confirmacao");
 
-  const limiteFreteGratis = 300.0;
-  const descontoMinimo = 200.0;
-  const descontoPercentual = 0.1; // 10%
-
-  // FUNÇÃO CENTRAL: Atualiza o resumo do pedido SEMPRE que carrinho mudar
-  function atualizarResumoPedido() {
-    const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
-    let total = 0;
-    listaProdutos.innerHTML = "";
-
-    if (carrinho.length === 0) {
-      listaProdutos.innerHTML = "<li>Nenhum produto no carrinho.</li>";
-    } else {
-      carrinho.forEach((produto) => {
-        const li = document.createElement("li");
-        li.textContent = `${produto.nome} - R$ ${produto.preco.toFixed(2)} (Quantidade: ${produto.quantidade})`;
-        listaProdutos.appendChild(li);
-        total += produto.preco * produto.quantidade;
-      });
-    }
-
-    // Frete grátis e desconto
-    if (freteGratisDiv) {
-      freteGratisDiv.style.display = total >= limiteFreteGratis ? "block" : "none";
-    }
-
-    let totalComDesconto = total;
-    if (descontoAplicadoDiv) {
-      if (total >= descontoMinimo) {
-        const desconto = total * descontoPercentual;
-        totalComDesconto -= desconto;
-        descontoAplicadoDiv.style.display = "block";
-        descontoAplicadoDiv.textContent = `Desconto aplicado: R$ ${desconto.toFixed(2)}`;
-      } else {
-        descontoAplicadoDiv.style.display = "none";
-      }
-    }
-
-    valorTotalSpan.textContent = totalComDesconto.toFixed(2);
-
-    // Atualiza as opções de parcelamento
-    if (numeroParcelasSelect && valorParcelaSpan) {
-      const numeroParcelas = parseInt(numeroParcelasSelect.value, 10) || 1;
-      let valorParcela = totalComDesconto / numeroParcelas;
-      if (numeroParcelas > 4) {
-        const jurosPercentual = 0.05; // 5% de juros
-        valorParcela += valorParcela * jurosPercentual;
-      }
-      valorParcelaSpan.textContent = `R$ ${valorParcela.toFixed(2)} por parcela`;
-    }
-  }
-
-  // Chame ao carregar a página
+  // Atualiza o resumo ao carregar a página
   atualizarResumoPedido();
 
   // Sempre que o número de parcelas mudar
   if (numeroParcelasSelect && valorParcelaSpan) {
-    numeroParcelasSelect.addEventListener("change", atualizarResumoPedido);
+    numeroParcelasSelect.addEventListener("change", () => {
+      // Recalcula e exibe o valor das parcelas usando o total com desconto
+      const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+      let total = 0;
+      carrinho.forEach((produto) => {
+        total += produto.preco * produto.quantidade;
+      });
+
+      const descontoPercentual = 0.1;
+      const descontoMinimo = 200.0;
+      let totalComDesconto = total;
+      if (total >= descontoMinimo) {
+        totalComDesconto -= total * descontoPercentual;
+      }
+
+      const numeroParcelas = parseInt(numeroParcelasSelect.value, 10) || 1;
+      let valorParcela = totalComDesconto / numeroParcelas;
+      if (numeroParcelas > 4) {
+        const jurosPercentual = 0.05;
+        valorParcela += valorParcela * jurosPercentual;
+      }
+      valorParcelaSpan.textContent = `R$ ${valorParcela.toFixed(2)} por parcela`;
+    });
   }
 
   // Alterna entre Pix, Boleto e Cartão
@@ -83,10 +95,10 @@ document.addEventListener("DOMContentLoaded", () => {
   metodoPagamentoRadios.forEach((radio) => {
     radio.addEventListener("change", () => {
       const metodoSelecionado = document.querySelector("input[name='metodo-pagamento']:checked").value;
-      pixQrCodeDiv.style.display = metodoSelecionado === "pix" ? "block" : "none";
-      boletoInfoDiv.style.display = metodoSelecionado === "boleto" ? "block" : "none";
-      informacoesCartaoDiv.style.display = metodoSelecionado === "cartao" ? "block" : "none";
-      parcelamentoCartaoDiv.style.display = metodoSelecionado === "cartao" ? "block" : "none";
+      if (pixQrCodeDiv) pixQrCodeDiv.style.display = metodoSelecionado === "pix" ? "block" : "none";
+      if (boletoInfoDiv) boletoInfoDiv.style.display = metodoSelecionado === "boleto" ? "block" : "none";
+      if (informacoesCartaoDiv) informacoesCartaoDiv.style.display = metodoSelecionado === "cartao" ? "block" : "none";
+      if (parcelamentoCartaoDiv) parcelamentoCartaoDiv.style.display = metodoSelecionado === "cartao" ? "block" : "none";
     });
   });
 
@@ -154,10 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Exibe a mensagem de confirmação
     if (mensagemConfirmacao) {
       mensagemConfirmacao.textContent = "Pagamento confirmado com sucesso!";
-      mensagemConfirmacao.style.display = "block";
-      setTimeout(() => {
-        // Limpa carrinho e atualiza resumo!
-        localStorage.removeItem("carrinho");
+      mensagemConfirmacaocarrinho");
         atualizarResumoPedido();
         window.location.href = "produtos.html";
       }, 3000);
@@ -170,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Exemplo: caso você tenha botão de "Limpar Carrinho"
+  // Limpar carrinho
   const limparCarrinhoBtn = document.getElementById("limpar-carrinho");
   if (limparCarrinhoBtn) {
     limparCarrinhoBtn.addEventListener("click", () => {
@@ -179,6 +188,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // DICA: Sempre que adicionar/remover produto do carrinho, chame:
-  // atualizarResumoPedido();
+  // Sempre que adicionar/remover produto do carrinho, chame atualizarResumoPedido()
 });
