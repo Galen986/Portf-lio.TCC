@@ -51,9 +51,31 @@ function atualizarResumoPedido() {
     });
   }
 
-  const limiteFreteGratis = 300.0;
-  const descontoMinimo = 200.0;
-  const descontoPercentual = 0.1; // 10%
+ // Defina seus cupons e regras
+const cupons = {
+  'FRETEGRATIS': { freteGratis: true, desconto: 0 },
+  'DESCONTO10': { freteGratis: false, desconto: 0.10 },
+  'SUPER20': { freteGratis: true, desconto: 0.20 }
+};
+
+let cupomAplicado = null;
+
+document.getElementById('aplicar-cupom').addEventListener('click', function() {
+  const input = document.getElementById('codigo-promocional').value.trim().toUpperCase();
+  const mensagem = document.getElementById('mensagem-cupom');
+
+  if (cupons[input]) {
+    cupomAplicado = cupons[input];
+    mensagem.style.display = "inline";
+    mensagem.textContent = "Cupom aplicado com sucesso!";
+    atualizarResumoPedido(); // função que recalcula o total e frete
+  } else {
+    cupomAplicado = null;
+    mensagem.style.display = "inline";
+    mensagem.style.color = "red";
+    mensagem.textContent = "Cupom inválido!";
+  }
+});
 
   if (freteGratisDiv) {
     freteGratisDiv.style.display = total >= limiteFreteGratis ? "block" : "none";
