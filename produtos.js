@@ -218,3 +218,19 @@ document.addEventListener('DOMContentLoaded', () => {
     menu.classList.toggle('open'); // Adiciona ou remove a classe 'open'
   });
 });
+
+// Adiciona evento ao botão "Limpar Carrinho"
+document.addEventListener("DOMContentLoaded", () => {
+  const limparCarrinhoBtn = document.getElementById("limpar-carrinho");
+
+  if (limparCarrinhoBtn) {
+    limparCarrinhoBtn.addEventListener("click", () => {
+      if (confirm("Tem certeza de que deseja limpar o carrinho?")) {
+        localStorage.removeItem("carrinho"); // Remove o carrinho do localStorage
+        carrinho = []; // Reinicializa o carrinho vazio
+        atualizarResumoPedido(); // Atualiza o resumo do pedido
+        alert("Carrinho limpo com sucesso!");
+      }
+    });
+  }
+});
