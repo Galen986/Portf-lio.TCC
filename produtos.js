@@ -1,32 +1,53 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+// Inicializa o carrinho vazio ao carregar a página
+let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+
+// Função para resetar o carrinho ao carregar ou atualizar a página
+function resetarCarrinho() {
+  localStorage.removeItem("carrinho"); // Remove o carrinho do localStorage
+  carrinho = []; // Reinicializa o carrinho vazio
+  atualizarResumoPedido(); // Atualiza o resumo para refletir o carrinho vazio
+}
+
+// Função para adicionar produtos ao carrinho com controle de quantidade
+function adicionarProdutoComQuantidade(nome, preco) {
+  const produtoExistente = carrinho.find((produto) => produto.nome === nome);
+
+  if (produtoExistente) {
+    produtoExistente.quantidade = (produtoExistente.quantidade || 1) + 1; // Incrementa a quantidade
+  } else {
+    carrinho.push({ nome, preco, quantidade: 1 }); // Adiciona o produto ao carrinho com quantidade inicial de 1
+  }
+
+  localStorage.setItem("carrinho", JSON.stringify(carrinho)); // Salva o carrinho no localStorage
+  alert(`${nome} foi adicionado ao carrinho!`);
+  atualizarResumoPedido(); // Atualiza o resumo na página de produtos
+}
+
+// Função para atualizar o resumo do pedido
+function atualizarResumoPedido() {
   const listaProdutos = document.getElementById("lista-produtos");
   const valorTotalSpan = document.getElementById("valor-total");
-  const freteGratisDiv = document.get = document.getElementById("numero-parcelas");
-  const valorParcelaSpan = document.getElementById("valor-parcela");
-  const pixQrCodeDiv = document.getElementById("pix-qr-code");
-  const boletoInfoDiv = document.getElementById("boleto-info");
-  const informacoesCartaoDiv = document.getElementById("informacoes-cartao");
-  const parcelamentoCartaoDiv = document.getElementById("parcelamento-cartao");
-  const codigoBarrasInput = document.getElementById("codigo-barras-boleto");
-  const confirmarPagamentoBtn = document.querySelector(".btn-animado");
-  const numeroCartaoInput = document.getElementById("numero-cartao");
-  const validadeCartaoInput = document.getElementById("validade-cartao");
-  const cvvCartaoInput = document.getElementById("cvv-cartao");
-  const enderecoInput = document.getElementById("endereco");
-  const mensagemConfirmacao = document.getElementById("mensagem-confirmacao");
+  const freteGratisDiv = document.getElementById("frete-gratis");
+  const descontoAplicadoDiv = document.getElementById("desconto-aplicado");
+
+  if (!listaProdutos || !valorTotalSpan) {
+    console.error("Elementos do resumo do pedido não encontrados.");
+    return;
+  }
 
   let total = 0;
+  listaProdutos.innerHTML = ""; // Limpa a lista existente
 
-  // Exibe os produtos no carrinho
   if (carrinho.length === 0) {
-    listaProdutos.innerHTML = "<li>Nenhum produto no carrinho.</li>";
+    const li = document.createElement("li");
+    li.textContent = "Nenhum produto no carrinho.";
+    listaProdutos.appendChild(li);
   } else {
     carrinho.forEach((produto) => {
       const li = document.createElement("li");
       li.textContent = `${produto.nome} - R$ ${produto.preco.toFixed(2)} (Quantidade: ${produto.quantidade})`;
       listaProdutos.appendChild(li);
-      total += produto.preco * produto.quantidade;
+      total += produto.preco * produto.quantidade; // Calcula o total com base na quantidade
     });
   }
 
@@ -34,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const descontoMinimo = 200.0;
   const descontoPercentual = 0.1; // 10%
 
-  // Exibe frete grátis ou desconto aplicado
   if (freteGratisDiv) {
     freteGratisDiv.style.display = total >= limiteFreteGratis ? "block" : "none";
   }
@@ -51,120 +71,150 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  valorTotalSpan.textContent = totalComDesconto.toFixed(2);
+  valorTotalSpan.textContent = totalComDesconto.toFixed(2); // Atualiza o total no resumo
+}
 
-  // Atualiza as opções de parcelamento
-  if (numeroParcelasSelect && valorParcelaSpan) {
-    numeroParcelasSelect.addEventListener("change", () => {
-      const numeroParcelas = parseInt(numeroParcelasSelect.value, 10);
-      let valorParcela = totalComDesconto / numeroParcelas;
-
-      // Adiciona juros para parcelas acima de 4
-      if (numeroParcelas > 4) {
-        const jurosPercentual = 0.05; // 5% de juros
-        valorParcela += valorParcela * jurosPercentual;
-      }
-
-      valorParcelaSpan.textContent = `R$ ${valorParcela.toFixed(2)} por parcela`;
-    });
+// Função para redirecionar para a página de pagamento
+function finalizarPedido() {
+  if (carrinho.length === 0) {
+    alert("Seu carrinho está vazio. Adicione produtos antes de finalizar o pedido.");
+    return;
   }
 
-  // Alterna entre Pix, Boleto e Cartão
-  const metodoPagamentoRadios = document.querySelectorAll("input[name='metodo-pagamento']");
-  metodoPagamentoRadios.forEach((radio) => {
-    radio.addEventListener("change", () => {
-      const metodoSelecionado = document.querySelector("input[name='metodo-pagamento']:checked").value;
+  localStorage.setItem("carrinho", JSON.stringify(carrinho)); // Salva o carrinho no localStorage
+  window.location.href = "pagamento.html"; // Redireciona para a página de pagamento
+}
 
-      pixQrCodeDiv.style.display = metodoSelecionado === "pix" ? "block" : "none";
-      boletoInfoDiv.style.display = metodoSelecionado === "boleto" ? "block" : "none";
-      informacoesCartaoDiv.style.display = metodoSelecionado === "cartao" ? "block" : "none";
-      parcelamentoCartaoDiv.style.display = metodoSelecionado === "cartao" ? "block" : "none";
+// Adiciona eventos ao carregar a página
+document.addEventListener("DOMContentLoaded", () => {
+  resetarCarrinho(); // Reseta o carrinho ao carregar ou atualizar a página
+
+  const botoesComprar = document.querySelectorAll(".btn-comprar");
+  botoesComprar.forEach((botao) => {
+    botao.addEventListener("click", (e) => {
+      const card = e.target.closest(".card-produto");
+      const nome = card.getAttribute("data-nome");
+      const preco = parseFloat(card.getAttribute("data-preco"));
+      adicionarProdutoComQuantidade(nome, preco); // Adiciona o produto ao carrinho com controle de quantidade
     });
   });
 
-  // Garante que o QR Code esteja oculto inicialmente
-  if (pixQrCodeDiv) pixQrCodeDiv.style.display = "none";
+  const finalizarPedidoBtn = document.getElementById("finalizar-pedido");
+  if (finalizarPedidoBtn) {
+    finalizarPedidoBtn.addEventListener("click", finalizarPedido); // Adiciona evento ao botão "Finalizar Pedido"
+  }
 
-  // Exibe o QR Code apenas se "Pix" for selecionado
+  atualizarResumoPedido(); // Atualiza o resumo ao carregar a página
+});
+
+// Função para adicionar produtos ao carrinho com controle de repetição
+function adicionarProdutoSemRepeticao(nome, preco) {
+  const produtoExistente = carrinho.find((produto) => produto.nome === nome);
+
+  if (produtoExistente) {
+    alert(`${nome} já está no carrinho!`);
+  } else {
+    carrinho.push({ nome, preco, quantidade: 1 }); // Adiciona o produto ao carrinho
+    localStorage.setItem("carrinho", JSON.stringify(carrinho));
+    alert(`${nome} foi adicionado ao carrinho!`);
+    atualizarResumoPedido(); // Atualiza o resumo na página de produtos
+  }
+}
+
+// Atualiza os eventos de clique nos botões "Comprar"
+document.addEventListener("DOMContentLoaded", () => {
+  const botoesComprar = document.querySelectorAll(".btn-comprar");
+  botoesComprar.forEach((botao) => {
+    botao.addEventListener("click", (e) => {
+      const card = e.target.closest(".card-produto");
+      const nome = card.getAttribute("data-nome");
+      const preco = parseFloat(card.getAttribute("data-preco"));
+      adicionarProdutoSemRepeticao(nome, preco); // Adiciona o produto ao carrinho sem repetição
+    });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const inputBusca = document.getElementById("busca-produtos");
+  const cardsProdutos = document.querySelectorAll(".card-produto");
+
+  // Função para filtrar os produtos com base na busca
+  inputBusca.addEventListener("input", () => {
+    const termoBusca = inputBusca.value.toLowerCase().trim();
+
+    cardsProdutos.forEach((card) => {
+      const nomeProduto = card.getAttribute("data-nome").toLowerCase();
+      if (nomeProduto.includes(termoBusca)) {
+        card.style.display = "block"; // Exibe o produto
+      } else {
+        card.style.display = "none"; // Oculta o produto
+      }
+    });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const metodoPagamentoRadios = document.querySelectorAll("input[name='metodo-pagamento']");
+  const informacoesCartao = document.getElementById("informacoes-cartao");
+  const parcelamentoCartao = document.getElementById("parcelamento-cartao");
+  const pixQrCode = document.getElementById("pix-qr-code");
+  const boletoInfo = document.getElementById("boleto-info");
+  const paymentMessage = document.getElementById("payment-message");
+
+  // Função para alternar entre os métodos de pagamento
   metodoPagamentoRadios.forEach((radio) => {
     radio.addEventListener("change", () => {
       const metodoSelecionado = document.querySelector("input[name='metodo-pagamento']:checked").value;
-      if (pixQrCodeDiv) {
-        pixQrCodeDiv.style.display = metodoSelecionado === "pix" ? "flex" : "none";
+
+      // Exibe ou oculta as seções com base no método selecionado
+      if (metodoSelecionado === "cartao") {
+        informacoesCartao.style.display = "block";
+        parcelamentoCartao.style.display = "block";
+        pixQrCode.style.display = "none";
+        boletoInfo.style.display = "none";
+      } else if (metodoSelecionado === "pix") {
+        informacoesCartao.style.display = "none";
+        parcelamentoCartao.style.display = "none";
+        pixQrCode.style.display = "block";
+        boletoInfo.style.display = "none";
+      } else if (metodoSelecionado === "boleto") {
+        informacoesCartao.style.display = "none";
+        parcelamentoCartao.style.display = "none";
+        pixQrCode.style.display = "none";
+        boletoInfo.style.display = "block";
       }
     });
   });
 
-  // Copiar código de barras do boleto
+  // Função para copiar o código de barras do boleto
   const copiarCodigoBarras = () => {
-    if (!codigoBarrasInput) {
-      console.error("Campo de código de barras não encontrado.");
-      alert("Erro interno: Não foi possível copiar o código de barras.");
-      return;
-    }
-
+    const codigoBarrasInput = document.getElementById("codigo-barras-boleto");
     codigoBarrasInput.select();
     document.execCommand("copy");
-    alert("Código de barras copiado com sucesso!");
+    alert("Código de barras copiado!");
   };
 
+  // Adiciona evento ao botão de copiar código de barras
   const copiarBoletoBtn = document.querySelector("button[onclick='copiarCodigoBarras()']");
   if (copiarBoletoBtn) {
     copiarBoletoBtn.addEventListener("click", copiarCodigoBarras);
   }
 
-  // Validação dos campos antes de confirmar pagamento
-  if (!confirmarPagamentoBtn) {
-    console.error("Botão 'Confirmar Pagamento' não encontrado.");
-    alert("Erro interno: Botão de confirmação de pagamento não encontrado.");
-    return;
-  }
+  // Exibe mensagem de confirmação ao enviar o formulário
+  const formPagamento = document.getElementById("form-pagamento");
+  formPagamento.addEventListener("submit", (e) => {
+    e.preventDefault();
+    paymentMessage.style.display = "block";
+    paymentMessage.textContent = "Pagamento confirmado com sucesso!";
+    localStorage.removeItem("carrinho"); // Limpa o carrinho após o pagamento
+  });
+});
 
-  confirmarPagamentoBtn.addEventListener("click", (event) => {
-    event.preventDefault(); // Impede o redirecionamento imediato
+document.addEventListener('DOMContentLoaded', () => {
+  const toggleMenuButton = document.querySelector('.btn-toggle-menu');
+  const menu = document.querySelector('.menu');
 
-    // Verifica se os campos do cartão estão preenchidos
-    if (
-      !numeroCartaoInput.value.trim() ||
-      !validadeCartaoInput.value.trim() ||
-      !cvvCartaoInput.value.trim() ||
-      !enderecoInput.value.trim()
-    ) {
-      alert("Por favor, preencha todos os campos do cartão e endereço antes de confirmar o pagamento.");
-      return;
-    }
-
-    // Valida o formato do número do cartão
-    const regexCartao = /^\d{4} \d{4} \d{4} \d{4}$/;
-    if (!regexCartao.test(numeroCartaoInput.value)) {
-      alert("Número do cartão inválido. Use o formato XXXX XXXX XXXX XXXX.");
-      return;
-    }
-
-    // Valida o formato da validade do cartão
-    const regexValidade = /^\d{2}\/\d{2}$/;
-    if (!regexValidade.test(validadeCartaoInput.value)) {
-      alert("Validade do cartão inválida. Use o formato MM/AA.");
-      return;
-    }
-
-    // Valida o formato do CVV
-    const regexCVV = /^\d{3,4}$/;
-    if (!regexCVV.test(cvvCartaoInput.value)) {
-      alert("CVV inválido. Use 3 ou 4 dígitos.");
-      return;
-    }
-
-    // Exibe a mensagem de confirmação
-    if (mensagemConfirmacao) {
-      mensagemConfirmacao.textContent = "Pagamento confirmado com sucesso!";
-      mensagemConfirmacao.style.display = "block";
-      setTimeout(() => {
-        window.location.href = "produtos.html";
-      }, 3000);
-    } else {
-      alert("Pagamento confirmado com sucesso!");
-      window.location.href = "produtos.html";
-    }
+  toggleMenuButton.addEventListener('click', () => {
+    menu.classList.toggle('open'); // Adiciona ou remove a classe 'open'
   });
 });

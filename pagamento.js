@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Referências aos elementos do DOM
   const carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
   const listaProdutos = document.getElementById("lista-produtos");
   const valorTotalSpan = document.getElementById("valor-total");
@@ -17,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const validadeCartaoInput = document.getElementById("validade-cartao");
   const cvvCartaoInput = document.getElementById("cvv-cartao");
   const enderecoInput = document.getElementById("endereco");
-  const mensagemConfirmacao = document.getElementById("mensagem-confirmacao");
 
   let total = 0;
 
@@ -57,26 +55,25 @@ document.addEventListener("DOMContentLoaded", () => {
   valorTotalSpan.textContent = totalComDesconto.toFixed(2);
 
   // Atualiza as opções de parcelamento
-  if (numeroParcelasSelect && valorParcelaSpan) {
-    numeroParcelasSelect.addEventListener("change", () => {
-      const numeroParcelas = parseInt(numeroParcelasSelect.value, 10);
-      let valorParcela = totalComDesconto / numeroParcelas;
+  numeroParcelasSelect.addEventListener("change", () => {
+    const numeroParcelas = parseInt(numeroParcelasSelect.value, 10);
+    let valorParcela = totalComDesconto / numeroParcelas;
 
-      // Adiciona juros para parcelas acima de 4
-      if (numeroParcelas > 4) {
-        const jurosPercentual = 0.05; // 5% de juros
-        valorParcela += valorParcela * jurosPercentual;
-      }
+    // Adiciona juros para parcelas acima de 4
+    if (numeroParcelas > 4) {
+      const jurosPercentual = 0.05; // 5% de juros
+      valorParcela += valorParcela * jurosPercentual;
+    }
 
-      valorParcelaSpan.textContent = `R$ ${valorParcela.toFixed(2)} por parcela`;
-    });
-  }
+    valorParcelaSpan.textContent = `R$ ${valorParcela.toFixed(2)} por parcela`;
+  });
 
   // Alterna entre Pix, Boleto e Cartão
   const metodoPagamentoRadios = document.querySelectorAll("input[name='metodo-pagamento']");
   metodoPagamentoRadios.forEach((radio) => {
     radio.addEventListener("change", () => {
       const metodoSelecionado = document.querySelector("input[name='metodo-pagamento']:checked").value;
+
       pixQrCodeDiv.style.display = metodoSelecionado === "pix" ? "block" : "none";
       boletoInfoDiv.style.display = metodoSelecionado === "boleto" ? "block" : "none";
       informacoesCartaoDiv.style.display = metodoSelecionado === "cartao" ? "block" : "none";
@@ -84,16 +81,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Garante que o QR Code esteja oculto inicialmente
-  if (pixQrCodeDiv) pixQrCodeDiv.style.display = "none";
-
-  // Exibe o QR Code apenas se "Pix" for selecionado
-  metodoPagamentoRadios.forEach((radio) => {
-    radio.addEventListener("change", () => {
-      const metodoSelecionado = document.querySelector("input[name='metodo-pagamento']:checked").value;
-      if (pixQrCodeDiv) {
-        pixQrCodeDiv.style.display = metodoSelecionado === "pix" ? "flex" : "none";
-      }
+  document.addEventListener("DOMContentLoaded", () => {
+    const metodoPagamentoRadios = document.querySelectorAll("input[name='metodo-pagamento']");
+    const pixQrCodeDiv = document.getElementById("pix-qr-code");
+    const confirmarPagamentoBtn = document.querySelector(".btn-animado");
+  
+    // Garante que o QR Code esteja oculto inicialmente
+    pixQrCodeDiv.style.display = "none";
+  
+    metodoPagamentoRadios.forEach((radio) => {
+      radio.addEventListener("change", () => {
+        const metodoSelecionado = document.querySelector("input[name='metodo-pagamento']:checked").value;
+  
+        // Exibe o QR Code apenas se "Pix" for selecionado
+        if (metodoSelecionado === "pix") {
+          pixQrCodeDiv.style.display = "flex"; // Usa flexbox para centralizar
+        } else {
+          pixQrCodeDiv.style.display = "none";
+        }
+      });
+    });
+  
+    // Garante que o botão "Confirmar Pagamento" funcione independentemente do QR Code
+    confirmarPagamentoBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      alert("Pagamento confirmado com sucesso!");
+      window.location.href = "produtos.html";
     });
   });
 
@@ -124,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   confirmarPagamentoBtn.addEventListener("click", (event) => {
     event.preventDefault(); // Impede o redirecionamento imediato
-
+  
     // Verifica se os campos do cartão estão preenchidos
     if (
       !numeroCartaoInput.value.trim() ||
@@ -135,38 +148,53 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Por favor, preencha todos os campos do cartão e endereço antes de confirmar o pagamento.");
       return;
     }
-
+  
     // Valida o formato do número do cartão
     const regexCartao = /^\d{4} \d{4} \d{4} \d{4}$/;
     if (!regexCartao.test(numeroCartaoInput.value)) {
       alert("Número do cartão inválido. Use o formato XXXX XXXX XXXX XXXX.");
       return;
     }
-
+  
     // Valida o formato da validade do cartão
     const regexValidade = /^\d{2}\/\d{2}$/;
     if (!regexValidade.test(validadeCartaoInput.value)) {
       alert("Validade do cartão inválida. Use o formato MM/AA.");
       return;
     }
-
+  
     // Valida o formato do CVV
     const regexCVV = /^\d{3,4}$/;
     if (!regexCVV.test(cvvCartaoInput.value)) {
       alert("CVV inválido. Use 3 ou 4 dígitos.");
       return;
     }
+  
+    // Exibe a mensagem de confirmação
+    mensagemConfirmacao.textContent = "Pagamento confirmado com sucesso!";
+    mensagemConfirmacao.style.display = "block";
+  
+    // Redireciona para outra página após 3 segundos
+    setTimeout(() => {
+      window.location.href = "produtos.html";
+    }, 3000);
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const confirmarPagamentoBtn = document.querySelector(".btn-animado");
+  const mensagemConfirmacao = document.getElementById("mensagem-confirmacao");
+
+  confirmarPagamentoBtn.addEventListener("click", (event) => {
+    event.preventDefault(); // Impede o redirecionamento imediato
 
     // Exibe a mensagem de confirmação
-    if (mensagemConfirmacao) {
-      mensagemConfirmacao.textContent = "Pagamento confirmado com sucesso!";
-      mensagemConfirmacao.style.display = "block";
-      setTimeout(() => {
-        window.location.href = "produtos.html";
-      }, 3000);
-    } else {
-      alert("Pagamento confirmado com sucesso!");
+    mensagemConfirmacao.textContent = "Pagamento confirmado com sucesso!";
+    mensagemConfirmacao.style.display = "block";
+
+    // Opcional: Redireciona para outra página após alguns segundos
+    setTimeout(() => {
       window.location.href = "produtos.html";
-    }
+    }, 3000); // Redireciona após 3 segundos
   });
 });
