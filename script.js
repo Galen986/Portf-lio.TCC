@@ -56,3 +56,26 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   });
+
+// Captura o formulário e impede o envio padrão
+document.querySelector('.contato-form form').addEventListener('submit', function(e) {
+  e.preventDefault(); // Impede envio padrão
+  
+  // Pega os valores
+  const nome = document.getElementById('nome').value;
+  const email = document.getElementById('email').value;
+  const mensagem = document.getElementById('mensagem').value;
+  
+  // Valida se está preenchido
+  if (nome && email && mensagem) {
+    // Exibe mensagem de sucesso
+    alert(`Obrigado ${nome}! Sua mensagem foi enviada com sucesso!`);
+    
+    // Limpa o formulário
+    this.reset();
+    
+    // Aqui você pode enviar para um servidor depois
+  } else {
+    alert('Por favor, preencha todos os campos!');
+  }
+});
